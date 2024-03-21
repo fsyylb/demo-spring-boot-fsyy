@@ -1,0 +1,35 @@
+POST http://localhost:8080/show/info
+Content-Type: application/json
+
+{}
+
+###
+#{
+#  "status": "error",
+#  "msg": "系统内部异常",
+#  "result": "info不能为空,姓名必填"
+#}
+###
+
+POST http://localhost:8080/show/info
+Content-Type: application/json
+
+{"name": "abcdefghi", "info": "a man"}
+
+###
+#{
+#  "status": "error",
+#  "msg": "系统内部异常",
+#  "result": "姓名过长"
+#}
+###
+
+
+POST http://localhost:8080/show/info
+Content-Type: application/json
+
+{"name": "fsyy", "info": "a man"}
+
+###
+# fsyy : a man
+#
