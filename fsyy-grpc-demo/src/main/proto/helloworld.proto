@@ -1,0 +1,29 @@
+// 使用proto3语法
+syntax = "proto3";
+
+// proto包名
+package helloworld;
+// 生成多个Java文件
+option java_multiple_files = true;
+// 指定Java包名
+option java_package = "com.fsyy.demo.hello";
+// 指定Java输出类名
+// option java_outer_classname = "HelloworldProto";
+
+
+
+// gRPC服务定义
+service Hello {
+  // gRPC服务方法定义
+  rpc sayHello (HelloRequest) returns (HelloReply) {}
+}
+
+// 请求参数定义
+message HelloRequest {
+  string name = 1;
+}
+
+// 响应结果定义
+message HelloReply {
+  string message = 1;
+}
