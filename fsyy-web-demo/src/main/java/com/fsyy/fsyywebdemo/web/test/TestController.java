@@ -1,7 +1,10 @@
 package com.fsyy.fsyywebdemo.web.test;
 
 import com.fsyy.fsyywebdemo.web.test.pojo.TestRequest;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
