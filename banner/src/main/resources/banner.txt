@@ -1,0 +1,3 @@
+Application Title: ${spring.application.name}
+Spring Boot Version: ${spring-boot.version}
+Fsyy Version: ${spring-boot-test.version}
