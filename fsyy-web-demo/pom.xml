@@ -16,6 +16,7 @@
     <properties>
         <java.version>8</java.version>
         <commons.lang3.version>3.8.1</commons.lang3.version>
+        <reflection.version>0.10.2</reflection.version>
     </properties>
 
     <dependencies>
@@ -39,6 +40,17 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>${reflection.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 
