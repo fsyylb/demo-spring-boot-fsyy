@@ -17,6 +17,7 @@
         <java.version>8</java.version>
         <commons.lang3.version>3.8.1</commons.lang3.version>
         <reflection.version>0.10.2</reflection.version>
+        <guice.version>6.0.0</guice.version>
     </properties>
 
     <dependencies>
@@ -51,6 +52,12 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>${guice.version}</version>
         </dependency>
     </dependencies>
 
