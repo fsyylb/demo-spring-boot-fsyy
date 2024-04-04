@@ -1,0 +1,24 @@
+log4j2异步可能导致一些error、info的最后一段日志无法保存至mysql中，原因是源码org.apache.logging.log4j.core.appender.db.AbstractDatabaseManager中，buffer(final LogEvent event)中，
+会判断this.buffer.size() >= this.bufferSize || event.isEndOfBatch()，然后才进行flush()。
+故若要改善此种情况，我的解决方法是，仿照AbstractDatabaseManager类，加入一个Timer定时器，定时检测buffer.size()是否为空，若为空，则直接flush()，不过前提要自定义一个
+appender。
+通过在JdbcAppender中注册为MYJDBC
+@Plugin(name = "MYJDBC", category = Core.CATEGORY_NAME, elementType = Appender.ELEMENT_TYPE, printObject = true)
+
+然后把log4j2.xml中的
+        <JDBC name="databaseAppender" bufferSize="128" tableName="demo_log">
+            <ConnectionFactory class="com.fsyy.fsyywebdemo.config.LogPoolManager" method="getConnection" />
+<!--            %X{id}表示获取org.apache.logging.log4j.ThreadContext.put("id", "id值); org.slf4j.MDC.put("id", "id值);也行-->
+            <Column name="event_id" pattern="%X{id}" />
+            <Column name="event_date" isEventTimestamp="true" />
+            <Column name="thread" pattern="%t %x" />
+            <Column name="class" pattern="%C" />
+            <Column name="`function`" pattern="%M" />
+            <Column name="message" pattern="%m" />
+            <Column name="exception" pattern="%ex{full}" />
+            <Column name="level" pattern="%level" />
+            <Column name="time" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}" />
+        </JDBC>
+
+JDBC修改为MYJDBC
+
