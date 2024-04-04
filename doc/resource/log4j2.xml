@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 该xml配置中,xml元素大小写不敏感 -->
+<!-- status="off",log4j2把自身事件记录到控制台的配置，off表示不记录，日志级别以及优先级排序: off > fatal > error > warn > info > debug > trace > all -->
+<!-- monitorInterval表示检测更改配置的时间,单位是秒,最小间隔为5秒,0或负数表示不检测 -->
+<configuration status="off" monitorInterval="0">
+
+    <!-- 常量引用 -->
+    <properties>
+        <property name="LOG_HOME">logs</property>
+        <property name="PROJECT">demo</property>
+
+<!--        %xwEx带颜色输出-->
+<!--        对log4j2的特定于Spring引导的转换器插件，ExtendedWhitespaceThrowablePatternConverter-->
+        <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
+        <Property name="LOG_LEVEL_PATTERN">%5p</Property>
+        <Property name="LOG_DATEFORMAT_PATTERN">yyyy-MM-dd HH:mm:ss.SSS</Property>
+        <Property name="CONSOLE_LOG_PATTERN">%clr{%d{${LOG_DATEFORMAT_PATTERN}}}{faint} %clr{${LOG_LEVEL_PATTERN}} %clr{%pid}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+        <Property name="FILE_LOG_PATTERN">%d{${LOG_DATEFORMAT_PATTERN}} ${LOG_LEVEL_PATTERN} %pid --- [%t] %-40.40c{1.} : %m%n${sys:LOG_EXCEPTION_CONVERSION_WORD}</Property>
+    </properties>
+
+    <!-- appender用于接收各种日志 -->
+    <appenders>
+        <!-- 常见的输出到console,常用于开发环境中,默认是system_err,还有一个system_out -->
+        <console name="Console" target="system_out">
+            <!-- appender级别的日志过滤 -->
+            <!-- <thresholdFilter level="info" onMatch="accept" onMismatch="deny"/> -->
+            <PatternLayout pattern="${sys:CONSOLE_LOG_PATTERN}" />
+        </console>
+
+        <!-- bufferSize 默认 128 -->
+        <JDBC name="databaseAppender" bufferSize="128" tableName="demo_log">
+            <ConnectionFactory class="com.fsyy.fsyywebdemo.config.LogPoolManager" method="getConnection" />
+<!--            %X{id}表示获取org.apache.logging.log4j.ThreadContext.put("id", "id值); org.slf4j.MDC.put("id", "id值);也行-->
+            <Column name="event_id" pattern="%X{id}" />
+            <Column name="event_date" isEventTimestamp="true" />
+            <Column name="thread" pattern="%t %x" />
+            <Column name="class" pattern="%C" />
+            <Column name="`function`" pattern="%M" />
+            <Column name="message" pattern="%m" />
+            <Column name="exception" pattern="%ex{full}" />
+            <Column name="level" pattern="%level" />
+            <Column name="time" pattern="%d{yyyy-MM-dd HH:mm:ss.SSS}" />
+        </JDBC>
+
+        <RollingRandomAccessFile name="RollingFileInfo" fileName="${LOG_HOME}/${PROJECT}/info.log" filePattern="${LOG_HOME}/${PROJECT}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral" />
+                <ThresholdFilter level="warn" onMatch="deny" onMismatch="neutral" />
+                <ThresholdFilter level="info" onMatch="accept" onMismatch="deny" />
+            </Filters>
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+            </Policies>
+
+            <!-- DefaultRolloverStrategy不设置的话，max默认值为7，删除符合条件7天之前的日志 -->
+            <!-- info-%d{yyyy-MM-dd}-%i.log.gz保存20个日志文件，删除60天之外的日志 -->
+            <DefaultRolloverStrategy max="20">
+                <Delete basePath="${LOG_HOME}/${PROJECT}/" maxDepth="2">
+                    <IfFileName glob="*/info-*.log.gz" />
+                    <IfLastModified age="60d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="RollingFileWarn" fileName="${LOG_HOME}/${PROJECT}/warn.log" filePattern="${LOG_HOME}/${PROJECT}/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log.gz">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="deny" onMismatch="neutral" />
+                <ThresholdFilter level="warn" onMatch="accept" onMismatch="deny" />
+            </Filters>
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="20">
+                <Delete basePath="${LOG_HOME}/${PROJECT}/" maxDepth="2">
+                    <IfFileName glob="*/warn-*.log.gz" />
+                    <IfLastModified age="60d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="RollingFileError" fileName="${LOG_HOME}/${PROJECT}/error.log" filePattern="${LOG_HOME}/${PROJECT}/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log.gz">
+            <ThresholdFilter level="error" onMatch="accept" onMismatch="deny" />
+            <PatternLayout pattern="${sys:FILE_LOG_PATTERN}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1" />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="20">
+                <Delete basePath="${LOG_HOME}/${PROJECT}/" maxDepth="2">
+                    <IfFileName glob="*/error-*.log.gz" />
+                    <IfLastModified age="60d" />
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+    </appenders>
+
+    <!-- 接收appender -->
+    <loggers>
+
+        <!--过滤掉spring的一些无用的debug信息 -->
+        <!-- 应该也要考虑mybatis的无用debug信息 -->
+        <logger name="org.springframework" level="info" />
+        <logger name="com.fsyy" level="info" />
+        <logger name="springfox.documentation" level="info" />
+
+        <!-- 定制包级别日志 -->
+        <!-- 自定义 logger 对象 includeLocation="false" 关闭日志记录的行号信息，开启的话会严重影响异步输出的性能 additivity="false" 不再继承 rootlogger对象 -->
+        <AsyncLogger name="com.fsyy.demo" level="info" includeLocation="false" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="RollingFileInfo" />
+            <AppenderRef ref="RollingFileWarn" />
+            <AppenderRef ref="RollingFileError" />
+        </AsyncLogger>
+
+        <AsyncLogger name="com.fsyy" level="info" includeLocation="true" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="databaseAppender" />
+        </AsyncLogger>
+
+        <!--<AsyncLogger name="org.apache.spark" level="debug" includeLocation="true" additivity="false">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="databaseAppender" />
+        </AsyncLogger>-->
+
+        <!-- root logger,一般用于放置所有的appender -->
+        <root level="info">
+            <appender-ref ref="Console" />
+            <AppenderRef ref="databaseAppender" />
+            <AppenderRef ref="RollingFileInfo" />
+            <AppenderRef ref="RollingFileWarn" />
+            <AppenderRef ref="RollingFileError" />
+        </root>
+    </loggers>
+
+    <!-- 最终实现：混合异步打印日志，日志文件中，只打印本级别日志，控制台打印全部日志， -->
+</configuration>

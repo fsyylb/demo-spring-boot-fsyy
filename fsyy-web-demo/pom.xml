@@ -18,6 +18,9 @@
         <commons.lang3.version>3.8.1</commons.lang3.version>
         <reflection.version>0.10.2</reflection.version>
         <guice.version>6.0.0</guice.version>
+        <commons.io.version>2.4</commons.io.version>
+        <!--<jackson.version>2.9.4</jackson.version>-->
+        <druid.version>1.2.3</druid.version>
     </properties>
 
     <dependencies>
@@ -58,6 +61,33 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons.io.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-properties</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
     </dependencies>
 
