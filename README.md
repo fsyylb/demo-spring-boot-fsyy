@@ -17,3 +17,5 @@ IDEA自动删除不需要的import语句
 knife4j 访问地址：http://localhost:8080/doc.html
 Swagger2.0访问地址：http://localhost:8080/swagger-ui.html
 Swagger3.0访问地址：http://localhost:8080/swagger-ui/index.html
+
+# RxJava2
