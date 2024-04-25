@@ -23,6 +23,7 @@
         <druid.version>1.2.3</druid.version>
         <mybatis.version>2.1.1</mybatis.version>
         <netty.version>4.1.31.Final</netty.version>
+        <hutool.all.version>5.8.26</hutool.all.version>
     </properties>
 
     <dependencies>
@@ -134,6 +135,14 @@
             <artifactId>netty-all</artifactId>
             <!--<version>${netty.version}</version>-->
         </dependency>
+
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.all.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

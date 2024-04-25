@@ -73,3 +73,50 @@ public class Main {
 
 摘要算法、对称加密、非对称加密、数字签名、数字证书浅析
 参考：https://zhibo.blog.csdn.net/article/details/79465163
+
+
+
+
+hutool数字签名
+Hutool是一个Java工具类库，它包含了一些实用的API。在安全方面，Hutool提供了数字签名的功能。数字签名是一种确保信息传输一致性和完整性的方法，它可以防止信息被篡改。
+
+在Hutool中，数字签名通常使用RSA算法。以下是一个使用Hutool进行数字签名的简单示例：
+
+首先，你需要添加Hutool的依赖到你的项目中。如果你使用Maven，可以在pom.xml中添加如下依赖：
+
+xml
+<dependency>
+    <groupId>cn.hutool</groupId>
+    <artifactId>hutool-all</artifactId>
+    <version>5.7.16</version>
+</dependency>
+然后，你可以使用Hutool提供的SecureUtil类来生成签名和验证签名：
+
+java
+import cn.hutool.core.util.HexUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.asymmetric.Sign;
+import cn.hutool.crypto.asymmetric.SignAlgorithm;
+
+public class HutoolSignExample {
+    public static void main(String[] args) {
+        String data = "需要签名的数据";
+
+        // 生成签名
+        Sign sign = SecureUtil.sign(SignAlgorithm.SHA256withRSA);
+        byte[] signBytes = sign.sign(data.getBytes());
+        String signHex = HexUtil.encodeHexStr(signBytes);
+        System.out.println("生成的签名为：" + signHex);
+
+        // 验证签名
+        boolean isValid = sign.verify(data.getBytes(), signBytes);
+        System.out.println("签名验证结果：" + isValid);
+    }
+}
+在这个例子中，我们使用SHA256withRSA算法对数据进行签名，然后将签名结果转换为十六进制字符串。之后，我们验证签名是否有效，确保数据的完整性和一致性。
+请注意，在实际应用中，你需要有一对公钥和私钥，私钥用来签名，公钥用来验证签名。你还需要确保这对密钥正确地在签名和验证签名的过程中使用。
+
+
+
+
+AES算法要求密钥长度必须是128位（16字节），192位（24字节），或256位（32字节）之一。
