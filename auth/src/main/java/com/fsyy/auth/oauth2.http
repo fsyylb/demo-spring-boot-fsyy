@@ -1,0 +1,12 @@
+POST http://localhost:8080/login
+Content-Type: application/x-www-form-urlencoded
+
+username=fsyy&password=123456
+
+###
+GET http://localhost:8080/oauth2/authorize?client_id=baidu&client_secret=baidu&response_type=code
+Cookie: ajs_anonymous_id=7bbac691-94c9-49dc-afd4-da1903c37989; wp-settings-time-1=1694676356; JSESSIONID=133328F0473557BCFD5E2E18A2F3F5C5
+Content-Type: application/x-www-form-urlencoded
+Accept: */*
+
+###
