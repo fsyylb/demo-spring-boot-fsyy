@@ -143,6 +143,19 @@
             <version>${hutool.all.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.101tec/zkclient -->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.5.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.curator</groupId>
+            <artifactId>curator-recipes</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
