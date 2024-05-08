@@ -359,3 +359,121 @@ java.lang.NullPointerException: null
 此时该问题就可以解决了。
 
 另一种解决方式，升级到curator 5.4.0及以上版本
+
+
+### 使用Curator框架实现分布式锁
+https://blog.csdn.net/weixin_47025166/article/details/125451987
+
+### ZooKeeper + Curator 实现的几种分布式锁
+https://blog.csdn.net/qq_27818541/article/details/115917267
+
+
+https://blog.csdn.net/2401_84181536/article/details/138281105
+curator提供了四种分布式锁，都实现自接口InterProcessLock；
+
+JAVA-doc：https://curator.apache.org/apidocs/org/apache/curator/framework/recipes/locks/package-summary.html
+
+1> InterProcessMutex
+
+可重入排它锁，每成功加锁一次，就要解锁一次。
+2> InterProcessSemaphoreMutex
+
+不可重入排他锁
+3> InterProcessReadWriteLock
+
+可重入读写锁，读共享，写互斥；
+一个拥有写锁的线程可重入读锁，但是读锁却不能进入写锁。
+这意味着写锁可以降级成读锁， 比如请求写锁 —>请求读锁—>释放读锁 —->释放写锁。
+4> InterProcessMultiLock
+
+联锁， 将多个锁作为单个实体管理的容器；
+当调用acquire()， 所有的锁都会被acquire()，如果请求失败，所有的锁都会被release。 同样调用release时所有的锁都被release(失败被忽略)。
+
+
+
+### Curator中的分布式锁解读
+https://blog.csdn.net/m0_62436868/article/details/130468165
+添加为了Spring配置
+
+### Zookeeper（curator）实现分布式锁案例
+https://blog.csdn.net/Saintmm/article/details/128103612
+https://zhuanlan.zhihu.com/p/674709638
+https://zhuanlan.zhihu.com/p/645540724
+https://www.jb51.net/program/298123t36.htm
+
+### SpringBoot整合zookeeper、curator，实现分布式ID生成
+https://www.jianshu.com/p/7d58fb6ab8a5
+https://gitee.com/kaixinshow/springboot-note
+
+Springboot-Zookeeper(curator)实现分布式锁、分布式ID等
+https://blog.csdn.net/W_Meng_H/article/details/127554713
+
+ZooKeeper入门（二）：ZooKeeper常用命令介绍及使用Curator客户端实现分布式配置中心
+https://cloud.tencent.com/developer/article/2114567
+
+框架篇：分布式全局唯一ID
+https://ost.51cto.com/posts/27703
+<dependency>
+    <groupId>org.apache.curator</groupId>
+    <artifactId>curator-framework</artifactId>
+    <version>4.2.0</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.curator</groupId>
+    <artifactId>curator-recipes</artifactId>
+    <version>4.2.0</version>
+</dependency>
+
+RetryPolicy retryPolicy = new ExponentialBackoffRetry(500, 3);
+CuratorFramework client = CuratorFrameworkFactory.builder()
+      .connectString("localhost:2181")
+      .connectionTimeoutMs(5000)
+      .sessionTimeoutMs(5000)
+      .retryPolicy(retryPolicy)
+      .build();
+client.start();  
+String sequenceName = "root/sequence/distributedId";
+DistributedAtomicLong  distAtomicLong = new DistributedAtomicLong(client, sequenceName, retryPolicy);
+//使用DistributedAtomicLong生成自增序列
+public Long sequence() throws Exception {
+    AtomicValue<Long> sequence = this.distAtomicLong.increment();
+    if (sequence.succeeded()) {
+        return sequence.postValue();
+    } else {
+        return null;
+    }
+}
+
+### Zookeeper的基本使用及概述(五) ------ Curator框架的使用
+https://blog.csdn.net/weixin_45616375/article/details/127121659
+
+
+### Zookeeper JAVA API的使用（zookeeper原生Java API使用）
+https://www.cnblogs.com/rocky-fang/p/9030438.html
+
+
+### zookeeper 常用的3种java客户端
+https://www.cnblogs.com/felixzh/p/15639247.html
+ZooKeeper JavaAPI 操作
+https://blog.csdn.net/qq_37435395/article/details/124999051
+Zookeeper命令总结
+https://blog.csdn.net/hc1285653662/article/details/131936308
+深入理解zookeeper——客户端发送请求流程
+https://zhuanlan.zhihu.com/p/678046152
+ZooKeeper 学习笔记
+https://blog.csdn.net/qq_52341269/article/details/130433000
+ZK（ZooKeeper）分布式锁实现
+https://www.51cto.com/article/687086.html
+Zookeeper——Docker下安装部署
+https://www.cnblogs.com/caoweixiong/p/12325410.html
+
+### 【仓储物流】美团-即时物流的分布式系统架构设计
+https://pdai.tech/md/arch/arch-example-meituan-jishiwuliu.html
+
+### Spring Statemachine应用实践 
+https://www.cnblogs.com/88223100/p/Spring-Statemachine-Application-Practice.html
+FSM——squirrel状态机使用 （松鼠状态机使用）
+https://blog.csdn.net/weixin_45565886/article/details/129197762
+
+### Zookeeper Curator 简单实现；监听Watcher；分布式事务，分布式计数器
+https://blog.csdn.net/qq_39246466/article/details/115692202
