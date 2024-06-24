@@ -83,3 +83,48 @@ export function setSessionStorage(name, value){
 # Moment.js
 https://momentjs.cn/guides/
 
+
+# pnpm的安装与使用
+pnpm使用
+官网： https://pnpm.js.org/installation/
+全局安装
+npm install pnpm -g
+
+设置源
+pnpm config get registry 
+//切换淘宝源
+pnpm config set registry http://registry.npm.taobao.org 
+
+
+使用
+pnpm install 包  // 
+pnpm i 包
+pnpm add 包    // -S  默认写入dependencies
+pnpm add -D    // -D devDependencies
+pnpm add -g    // 全局安装
+
+移除
+pnpm remove 包                            //移除包
+pnpm remove 包 --global                   //移除全局包
+
+更新
+pnpm up                //更新所有依赖项
+pnpm upgrade 包        //更新包
+pnpm upgrade 包 --global   //更新全局包
+
+设置存储路径
+arduino复制代码pnpm config set store-dir /path/to/.pnpm-store
+
+https://juejin.cn/post/7037480024106074148
+
+不用切换源，安装好的registry.npmmirror.com就已经是淘宝源了
+淘宝源地址已经换了
+
+# 轻松解决 Node.js 的 Error: error:0308010C:digital envelope routines::unsupported 错误
+export NODE_OPTIONS=--openssl-legacy-provider
+
+# 新版镜像
+npm config set registry https://registry.npmmirror.com
+
+# （浅谈）npm 、cnpm、yarn 、pnpm、CDN之间的差异
+https://juejin.cn/post/7096048182290972679
