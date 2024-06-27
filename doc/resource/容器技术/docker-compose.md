@@ -202,3 +202,41 @@ docker中一般是/var/run/mysqld/mysqld.sock
 在大多数Linux发行版中，MySQL的默认安装位置是/var/lib/mysql目录。这个目录是MySQL数据库服务器使用的默认数据目录，所有数据库文件都存储在这里。MySQL使用一系列文件和子目录来组织和存储数据，确保理解MySQL数据目录的结构对于管理和维护MySQL数据库至关重要。
 安装好MySQL 8之后，可以查看如下的目录结构，其中数据库文件的存放路径就是/var/lib/mysql/。这个目录包含了MySQL的所有数据库文件，是MySQL服务器的数据目录。
 此外，除了数据目录外，MySQL的相关命令目录位于`/usr/bin`和`/usr/sbin`，而配置文件目录则位于/usr/share/mysql-8.0和/etc/mysql（如my.cnf）。这些信息对于管理和配置MySQL数据库系统非常重要。
+
+“数据库未初始化，密码没设置。你需要设置MYSQL_ROOT_PASSWORD, MYSQL_ALLOW_EMPTY_PASSWORD and MYSQL_RANDOM_ROOT_PASSWORD三个中的任意一项”
+其中 MYSQL_ROOT_PASSWORD即root账户的密码。
+MYSQL_ALLOW_EMPTY_PASSWORD即允许密码为空。
+MYSQL_RANDOM_ROOT_PASSWORD随机一个root账户密码。
+
+
+init_mysql.sh
+
+#!/bin/sh
+
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+mysql --help 2>/dev/null
+if [ $? -ne 0 ];then
+echo "begin install mysql"
+tar -xf mysql-5.7.21-linux-glibc2.12-x86_64.tar.gz
+export PATH=$(pwd)/mysql-5.7.21-linux-glibc2.12-x86_64/bin/:$PATH
+echo "there is no mysql"
+echo "install mysql succeed!!!"
+else
+echo "there is a mysql"
+fi
+
+
+mysql -uuser -ppassword -h hostIP -P port <<EOF
+set character set utf8mb4;
+source /home/mysql/init_mysql/init_mysql_script/inti_mysql_2108.sql;
+source /home/mysql/init_mysql/init_mysql_script/inti_mysql_2109.sql;
+EOF
+[ $? -eq 0 ] && echo "created table user_info" || echo "table user_info already exists"
+
+
+https://hub.docker.com/u/zabbix
+Zabbix容器化：快速部署与高效监控相结合
+https://blog.csdn.net/2301_79223017/article/details/134806785
+docker network create -d bridge --subnet 172.18.0.0/16 zabbix-net 
+docker run --name zabbix-mysql -t -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="root123" -e TZ="Asia/Shanghai" -e ZBX_DBTLSCONNECT="required" --network=zabbix-net --ip=172.18.0.2 --restart=always --privileged=true -d mysql:8.0.28 --character-set-server=utf8 --collation-server=utf8_bin
