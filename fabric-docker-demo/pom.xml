@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.1.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.fsyy</groupId>
+    <artifactId>fabric-docker-demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>fabric-docker-demo</name>
+    <description>Demo project for Spring Boot</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMdd-HH</maven.build.timestamp.format>
+        <docker.hub>fsyy.com</docker.hub>
+        <java.version>1.8</java.version>
+        <skipTests>true</skipTests>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- 添加docker-maven插件 -->
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.40.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <!--<goal>push</goal>-->
+                            <!--<goal>remove</goal>-->
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 连接到带docker环境的linux服务器编译image -->
+                    <!-- <dockerHost>http://localhost:2375</dockerHost> -->
+                     <dockerHost>http://localhost:2375</dockerHost>
+
+                    <!-- Docker 推送镜像仓库地址 -->
+                    <!--<pushRegistry>${docker.hub}</pushRegistry>-->
+                    <images>
+                        <!--<image>
+                            &lt;!&ndash;推送到私有镜像仓库，镜像名需要添加仓库地址 &ndash;&gt;
+                            <name>
+                                ${docker.hub}/lb/${project.artifactId}:${project.version}-UTC-${maven.build.timestamp}</name>
+                            &lt;!&ndash;定义镜像构建行为 &ndash;&gt;
+                            <build>
+                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                            </build>
+                        </image>-->
+                        <image>
+                            <name>
+                                ${docker.hub}/lb/${project.artifactId}:${project.version}</name>
+                            <build>
+                                <dockerFileDir>${project.basedir}</dockerFileDir>
+                            </build>
+                        </image>
+                    </images>
+                    <!--<authConfig>
+                        &lt;!&ndash; 认证配置，用于私有镜像仓库registry认证 &ndash;&gt;
+                        <username>${docker.username}</username>
+                        <password>${docker.password}</password>
+                    </authConfig>-->
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <targetPath>META-INF/resources</targetPath>
+            </resource>
+        </resources>
+    </build>
+
+</project>
