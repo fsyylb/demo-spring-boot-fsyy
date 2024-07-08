@@ -100,3 +100,51 @@ ${docker.hub}/lb/${project.artifactId}:${project.version}
 lb是命名空间，需要在阿里云上设置并对应,没有对应上会报错
 ${project.artifactId}:${project.version}是镜像名称和版本号
 ```
+
+maven配置server时对password进行加密
+```text
+1.需求
+因为公司的编译服务器部署在了阿里云上，需要在编译完成后上传编译后的aar文件到公司maven私服上，普通的maven部署方式是把maven私服的账号密码以明文的方式配置在settings.xml文件中
+
+<server>
+      <id>deploymentRepo</id>
+      <username>admin</username>
+      <password>12345678</password>
+</server>
+
+这种方式的配置很容易被别人看到从而泄漏了你的个人信息，显然是不适应于我的这种环境下使用的。
+
+2.加密
+maven其实可以对用户密码进行加密，需要用到下面2个命令
+
+mvn --encrypt-master-password <password>
+mvn --encrypt-password <password>
+
+2-1 获取master密码
+执行mvn --encrypt-master-password <password>即可得到一个master密码，例如对12345678这个密码进行加密:
+mvn --encrypt-master-password 12345678
+得到加密串:
+{VrVw6/Cg8FYHpfLj8oO/qRbMY5VrfGtIeR7RX5OHeV0=}
+我们需要打开~/.m2/settings-security.xml这个文件(如果没有就手动创建)
+添加到标签中，文件内容如下:
+
+<settingsSecurity>
+    <master>{VrVw6/Cg8FYHpfLj8oO/qRbMY5VrfGtIeR7RX5OHeV0=}</master>
+</settingsSecurity>
+
+2-2 获取server加密密码
+执行mvn --encrypt-password <password>即可得到一个server密码,例如再对12345678这个密码进行加密:
+mvn --encrypt-password 12345678
+得到加密串:
+{2Db+TFdWDgQHlN7gBd1PAZHEC5h5E3Wuhcs9NBLdVIE=}
+把这个加密串添加到settings.xml中server节点的password中:
+
+<server>
+      <id>deploymentRepo</id>
+      <username>admin</username>
+      <password>{2Db+TFdWDgQHlN7gBd1PAZHEC5h5E3Wuhcs9NBLdVIE=}</password>
+    </server>
+https://blog.csdn.net/u013648164/article/details/81005876
+https://blog.csdn.net/qq_16127313/article/details/132512424
+```
+
