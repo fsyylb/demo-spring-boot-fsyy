@@ -93,3 +93,10 @@ mvn clean package
 ```shell script
 docker run --name docker-demo -d -p 8080:8080 fsyy.com/lb/fabric-docker-demo:0.0.1-SNAPSHOT
 ```
+注意事项
+```text
+${docker.hub}/lb/${project.artifactId}:${project.version}
+其中${docker.hub}是镜像仓库地址，阿里云的一般是registry.cn-hangzhou.aliyuncs.com
+lb是命名空间，需要在阿里云上设置并对应,没有对应上会报错
+${project.artifactId}:${project.version}是镜像名称和版本号
+```
