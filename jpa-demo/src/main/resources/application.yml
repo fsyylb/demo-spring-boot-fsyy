@@ -1,0 +1,26 @@
+# docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+# docker run --name test-mysql -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -d mysql:8.0.29
+#spring:
+#  # 数据库相关
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    # url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=true
+#    url: jdbc:mysql://127.0.0.1:3307/test?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useSSL=true
+#    username: root
+#    password: 123456
+#  # JPA 相关
+#  jpa:
+#    hibernate:
+#      ddl-auto: update   #ddl-auto:设为 create 表示每次都重新建表
+#    show-sql: true
+
+
+# docker pull opengauss/opengauss:5.0.0
+# docker run --name opengauss --privileged=true -d -e GS_PASSWORD=openGauss@123 -p5432:5432 opengauss/opengauss:5.0.0
+
+
+# docker pull enmotech/opengauss:5.1.0
+# docker run --name opengauss --privileged=true -d -e GS_PASSWORD=Enmo@123 enmotech/opengauss:5.1.0
+
+# 5+都有问题，使用3.0.0
+
