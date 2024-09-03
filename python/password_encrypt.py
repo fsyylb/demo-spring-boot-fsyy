@@ -192,3 +192,45 @@ if __name__ == '__main__':
 
 
 '''
+
+
+import base64
+from Crypto.PublicKey import RSA
+from Crypto.Hash import SHA
+from Crypto.Signature import PKCS1_v1_5 as PKCS1_signature
+from Crypto.Cipher import PKCS1_v1_5 as PKCS1_cipher
+
+def rsa_private_sign(private_key, data):
+    signer = PKCS1_signature.new(private_key)
+    digest = SHA.new()
+    digest.update(data.encode("utf-8"))
+    sign = signer.sign(digest)
+    signature = base64.b64encode(sign).decode("utf-8")
+    return signature
+
+def rsa_public_check_sign(public_key, text, sign):
+    verifier = PKCS1_signature.new(public_key)
+    digest = SHA.new()
+    digest.update(text.encode("utf-8"))
+    return verifier.verify(digest, base64.b64decode(sign))
+
+private_key = None
+public_key = None
+with open('public_key.pem', 'rb') as f:
+    public_key = RSA.importKey(f.read())
+
+with open('private_key.pem', 'rb') as f:
+    private_key = RSA.importKey(f.read())
+
+data = 'hello'
+signature = rsa_private_sign(private_key, data)
+checksign = rsa_public_check_sign(public_key, data, signature)
+
+
+
+
+#### https://blog.csdn.net/kobe_okok/article/details/124925803
+#### https://blog.csdn.net/weixin_42323041/article/details/105832325
+#### https://www.cnblogs.com/qxh-beijing2016/p/15249911.html
+
+#### (r ** e % n * m) ** d % n = (r * (m ** d % n) ) % n
