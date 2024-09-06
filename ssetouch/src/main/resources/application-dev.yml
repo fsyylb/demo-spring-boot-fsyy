@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ${jdbc.url}
+    username: ${jdbc.username}
+    password: ${jdbc.password}
+    driverClassName: ${jdbc.driver}
+    type: com.zaxxer.hikari.HikariDataSource
+    sqlScriptEncoding: utf-8
+    # initializationMode: always
+    # schema: classpath:sql/schema.sql
+    continueOnError: true
+    hikari:
+      auto-commit: true
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      maximum-pool-size: 15
+      minimum-idle: 5
+      pool-name: DatebookHikariCP
+
+#设置日志级别
+logging:
+  level:
+    org:
+      springframework:
+        web: INFO
+
