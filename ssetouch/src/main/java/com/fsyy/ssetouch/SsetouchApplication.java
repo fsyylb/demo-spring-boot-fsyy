@@ -6,9 +6,15 @@ import org.apache.commons.lang3.SystemUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableCaching
+@EnableScheduling
 @SpringBootApplication
+@PropertySource("classpath:jdbc.properties")
 public class SsetouchApplication {
 
     public static void main(String[] args) {
